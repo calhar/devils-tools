@@ -19,11 +19,9 @@ int main(int argc, char* args[]) {
     int offsetStart = i * channels * sampleSize;
     int offsetEnd = (samples - (i + 1)) * channels * sampleSize;
 
-    for (int j = 0; j < channels * sampleSize; ++j) {
-      char temp = audioData[offsetStart + j];
-      audioData[offsetStart + j] = audioData[offsetEnd + j];
-      audioData[offsetEnd + j] = temp;
-    }
+    std::swap_ranges(audioData.begin() + offsetStart,
+        audioData.begin() + offsetStart + (channels * sampleSize),
+        audioData.begin() + offsetEnd);
   }
 
   std::ofstream outputFile(args[2], std::ios::out | std::ios::binary);
