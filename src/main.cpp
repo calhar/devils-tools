@@ -26,11 +26,6 @@ int main(int argc, char* args[]) {
     }
   }
 
-  if (outFilename.empty()) {
-    std::cerr << "Must have values for argument -o" << std::endl;
-    return -1;
-  }
-
   std::ifstream inFilestream;
   std::istream* inStream = &std::cin;
   if (!inFilename.empty()) {
@@ -53,12 +48,19 @@ int main(int argc, char* args[]) {
         audioData.begin() + offsetEnd);
   }
 
-  std::ofstream outputFile(outFilename, std::ios::out | std::ios::binary);
+  std::ofstream outFilestream;
+  std::ostream* outStream = &std::cout;
+  if (!outFilename.empty()) {
+    outFilestream = std::ofstream(
+        outFilename,
+        std::ios::out | std::ios::binary);
+    outStream = &outFilestream;
+  }
 
   std::copy(
       audioData.begin(),
       audioData.end(),
-      std::ostreambuf_iterator<char>(outputFile));
+      std::ostreambuf_iterator<char>(*outStream));
 
   return 0;
 }
