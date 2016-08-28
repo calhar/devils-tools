@@ -14,7 +14,6 @@ int main(int argc, char* args[]) {
 
   if (argc > 1) {
     for (auto iter = args + 1; iter != args + argc; ++iter) {
-      std::cout << *iter << std::endl;
       if (strcmp(*iter, "-i") == 0) {
         inFilename = std::string(*(++iter));
       } else if (strcmp(*iter, "-o") == 0) {
