@@ -26,15 +26,20 @@ int main(int argc, char* args[]) {
     }
   }
 
-  if (inFilename.empty() || outFilename.empty()) {
-    std::cerr << "Must have values for arguments -i and -o" << std::endl;
+  if (outFilename.empty()) {
+    std::cerr << "Must have values for argument -o" << std::endl;
     return -1;
   }
 
-  std::ifstream inputFile(inFilename, std::ios::binary);
+  std::ifstream inFilestream;
+  std::istream* inStream = &std::cin;
+  if (!inFilename.empty()) {
+    inFilestream = std::ifstream(inFilename, std::ios::binary);
+    inStream = &inFilestream;
+  }
 
   std::vector<char> audioData (
-      (std::istreambuf_iterator<char>(inputFile)),
+      (std::istreambuf_iterator<char>(*inStream)),
       (std::istreambuf_iterator<char>()));
 
   int samples = audioData.size() / (channels * sampleSize);
