@@ -1,13 +1,38 @@
 #include <fstream>
+#include <cstring>
 #include <vector>
 #include <iterator>
 #include <algorithm>
+#include <iostream>
 
 int main(int argc, char* args[]) {
   int channels = 2;
   int sampleSize = 2;
 
-  std::ifstream inputFile(args[1], std::ios::binary);
+  std::string inFilename;
+  std::string outFilename;
+
+  if (argc > 1) {
+    for (auto iter = args + 1; iter != args + argc; ++iter) {
+      std::cout << *iter << std::endl;
+      if (strcmp(*iter, "-i") == 0) {
+        inFilename = std::string(*(++iter));
+      } else if (strcmp(*iter, "-o") == 0) {
+        outFilename = std::string(*(++iter));
+      } else if (strcmp(*iter, "-c") == 0) {
+        channels = std::stoi(*(++iter));
+      } else if (strcmp(*iter, "-s") == 0) {
+        sampleSize = std::stoi(*(++iter));
+      }
+    }
+  }
+
+  if (inFilename.empty() || outFilename.empty()) {
+    std::cerr << "Must have values for arguments -i and -o" << std::endl;
+    return -1;
+  }
+
+  std::ifstream inputFile(inFilename, std::ios::binary);
 
   std::vector<char> audioData (
       (std::istreambuf_iterator<char>(inputFile)),
@@ -24,7 +49,7 @@ int main(int argc, char* args[]) {
         audioData.begin() + offsetEnd);
   }
 
-  std::ofstream outputFile(args[2], std::ios::out | std::ios::binary);
+  std::ofstream outputFile(outFilename, std::ios::out | std::ios::binary);
 
   std::copy(
       audioData.begin(),
