@@ -43,7 +43,8 @@ int main(int argc, char* args[]) {
     int offsetStart = i * channels * sampleSize;
     int offsetEnd = (samples - (i + 1)) * channels * sampleSize;
 
-    std::swap_ranges(audioData.begin() + offsetStart,
+    std::swap_ranges(
+        audioData.begin() + offsetStart,
         audioData.begin() + offsetStart + (channels * sampleSize),
         audioData.begin() + offsetEnd);
   }
