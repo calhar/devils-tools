@@ -14,6 +14,7 @@ int main(int argc, char *args[]) {
 
   int channels = 2;
   int bytes = 2;
+  int rate = 44100;
 
   int start = 0;
   int end;
@@ -30,12 +31,12 @@ int main(int argc, char *args[]) {
 
   int samples = audio.size() / (channels * bytes);
 
-  int max_time = samples; //(samples / 44100) * 44100;
+  int max_time = (samples / rate) * rate;
 
   dtools::audio_player player;
   player.bits(8 * bytes);
   player.channels(channels);
-  player.rate(44100);
+  player.rate(rate);
   player.byte_format(AO_FMT_LITTLE);
 
   player.init_device();
@@ -87,8 +88,8 @@ int main(int argc, char *args[]) {
       }
 
       std::copy(
-          audio.begin() + start * channels * bytes * 44100,
-          audio.begin() + end * channels * bytes * 44100,
+          audio.begin() + start * channels * bytes * rate,
+          audio.begin() + end * channels * bytes * rate,
           std::ostreambuf_iterator<char>(*out_stream));
     } else if (c == '\n') {
       continue;
