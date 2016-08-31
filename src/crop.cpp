@@ -43,6 +43,12 @@ int main(int argc, char *args[]) {
   std::thread player_thread;
   char c = '0';
   do {
+    // basic command line interface using getchar()
+    // a/f controls start of crop
+    // h/l controls end of crop
+    // p plays/stops the audio preview
+    // c saves the cropped section to file
+    // q quits
     if (c == 'f') {
       start = start + 1 < end ? start + 1 : start;
     } else if (c == 'a') {
@@ -69,6 +75,21 @@ int main(int argc, char *args[]) {
       // bit of a hack to avoid race conditions stemming from entering commands
       // like "pq<return>"
       std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    } else if (c == 'c') {
+      // create/open file or get stdout
+      std::ofstream out_filestream;
+      std::ostream* out_stream = &std::cout;
+      if (!out_filename.empty()) {
+        out_filestream = std::ofstream(
+            out_filename,
+            std::ios::out | std::ios::binary);
+        out_stream = &out_filestream;
+      }
+
+      std::copy(
+          audio.begin() + start * channels * bytes * 44100,
+          audio.begin() + end * channels * bytes * 44100,
+          std::ostreambuf_iterator<char>(*out_stream));
     } else if (c == '\n') {
       continue;
     }
