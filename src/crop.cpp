@@ -24,9 +24,15 @@ int main(int argc, char *args[]) {
   start = std::stoi(args[3]);
   end = std::stoi(args[4]);
 
-  std::ifstream in_filestream(in_filename, std::ios::binary);
+  // get basic_istream for filename or stdin if none provided
+  std::ifstream in_filestream;
+  std::istream* in_stream = &std::cin;
+  if (!in_filename.empty()) {
+    in_filestream = std::ifstream(in_filename, std::ios::binary);
+    inStream = &in_filestream;
+  }
 
-  std::vector<char> audio((std::istreambuf_iterator<char>(in_filestream)),
+  std::vector<char> audio((std::istreambuf_iterator<char>(in_stream)),
                           (std::istreambuf_iterator<char>()));
 
   int samples = audio.size() / (channels * bytes);
